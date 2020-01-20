@@ -5,8 +5,7 @@ import (
 	logger "github.com/ripx80/log"
 	lr "github.com/ripx80/log/logrus"
 
-	"github.com/ripx80/log/example"
-
+	example "github.com/ripx80/log/example/somelib"
 
 	"github.com/sirupsen/logrus"
 )
@@ -25,11 +24,9 @@ func main() {
 	log := *logger.New(logrusLog)
 	logger.Set(log)
 
-
 	log.Infof("test")
 
 	/*init new logrus with fields*/
-
 
 	log.Debugf("test")
 
@@ -42,7 +39,7 @@ func main() {
 	log.InvalidConfig("unkown-config")
 	/* use in libs*/
 
-	log = *logger.New(logrusLog.WithFields(logrus.Fields{"animal": "walrus",}))
+	log = *logger.New(logrusLog.WithFields(logrus.Fields{"animal": "walrus"}))
 	logger.Set(log)
 
 	example.SomeCall()
