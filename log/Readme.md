@@ -2,16 +2,18 @@
 
 Principles
 
-- dont log in libs, return errors
-- But I have a hight level lib and I must log. Then use interfaces! (The package level logger anti pattern)
-- Use a save method to exit and respect the defer calls (log.Panic/log.Fatal)
+- dont log in libs, return errors or handle them not log them in libs
+- But I have a hight level lib and I must log. Then use interfaces!
+- Use a save method in main to exit and respect the defer calls (dont use log.Panic/log.Fatal)
 - dont have dependencies at compile time in your core libs for logging (interface to the rescue)
 - One place to set logger settings
+- Use structured logs to query them
+- No warning log level: Nobody reads warnings, because by definition nothing went wrong.
 
 ## Task description
 
-[Go] Improve fearlessly logging principle
-We believe that improve the logging mechanism in fearlessly (https://appsgit.bethel.jw.org/o11n/fearlessly) decouple dependency to a special logging lib.
+[Go] Improve logging principle
+We believe that improve the logging mechanism decouple dependency to a special logging lib.
 it will reduce dependencies in our core code and increase the maintainability and will improve our understanding of a good principle to log in core libs.
 We are done if we implement a general logging interface which implements different logging libs (logrus).
 
@@ -26,13 +28,40 @@ Because we handle all our Log functionality in one Interface we can allow or dis
 For example the logrus lib has a log.Panic function wich where catched by the lib and then exit with a os.Exit and not respect our defer calls.
 So we will not Implement this function in the interface to have a clean exit in our defer main function. When you will exit with a log call and have a clean exit, use the log.Fatal function call in your lib.
 
+## The disaster with logging
+
+- package initilized logger, must be build on compile time, one global logger, you dont see where he exactly come from, runtime errors if not init (Use noop logger)
+- package struct, must be init from the caller, canot use global in libs
+- logs in tests are bad, use a in memory or noop logger
+
+## Discussion
+
+- global Package logger? (noop or arg)
+- three log levels?
+- With fields?
+- defined log entries (const strings)?
+- in memory logging for testing?
+- default format and output type/json?
+- errors.Wrap?
+
 ## Ressources
 
 [https://dave.cheney.net/tag/logging](Dave Cheney logging)
+
 [https://dave.cheney.net/2017/01/26/context-is-for-cancelation](dont use context to log)
+
 [https://medium.com/@jfeng45/go-microservice-with-clean-architecture-application-logging-b43dc5839bce](clean app logging)
+
 [https://medium.com/@jfeng45/go-microservice-with-clean-architecture-a08fa916a5db](clean log arch)
+
 [https://github.com/jfeng45/servicetmpl](mircoservices with a good log arch)
+
 [https://www.mountedthoughts.com/golang-logger-interface/](another golang-logger)
+
 [github.com/amitrai48/logger](amitrai48 logger)
-https://www.datadoghq.com/blog/go-logging/
+
+[https://www.datadoghq.com/blog/go-logging/](datadog talk about go-logging)
+
+[https://github.com/go-log/log](go-log is a reference impl)
+
+[https://github.com/go-logr/logr](next step impl of go-log)
