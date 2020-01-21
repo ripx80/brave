@@ -2,10 +2,10 @@
 package main
 
 import (
-	"github.com/ripx80/log/logger"
-	lr "github.com/ripx80/log/logrus"
+	"github.com/ripx80/brave/log/logger"
+	lr "github.com/ripx80/brave/log/logrus"
 
-	example "github.com/ripx80/log/example/somelib"
+	example "github.com/ripx80/brave/log/example/somelib"
 
 	"github.com/sirupsen/logrus"
 )
@@ -22,7 +22,6 @@ func main() {
 	//log.SetLogger(logrusLog)
 
 	log := *logger.New(logrusLog)
-	logger.Set(log)
 
 	log.Infof("test")
 
@@ -40,8 +39,6 @@ func main() {
 	/* use in libs*/
 
 	log = *logger.New(logrusLog.WithFields(logrus.Fields{"animal": "walrus"}))
-	logger.Set(log)
-
-	example.SomeCall()
+	// you realy log in libs? no magic!
 	example.SomeCallArg(log)
 }

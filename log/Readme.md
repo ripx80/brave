@@ -36,13 +36,13 @@ So we will not Implement this function in the interface to have a clean exit in 
 
 ## Discussion
 
-- global Package logger? (noop or arg)
+- global Package logger? (noop or arg), no (no global vars, no magic)
 - three log levels?
 - With fields?
-- defined log entries (const strings)?
+- defined log entries (const strings)? not here, use a error package to define errors (dependency?)
 - in memory logging for testing?
 - default format and output type/json?
-- errors.Wrap?
+- errors.Wrap, yes but only when you use third parity libs and you dont nothing about the error.
 
 ## Ressources
 
@@ -65,3 +65,5 @@ So we will not Implement this function in the interface to have a clean exit in 
 [https://github.com/go-log/log](go-log is a reference impl)
 
 [https://github.com/go-logr/logr](next step impl of go-log)
+
+[https://peter.bourgon.org/blog/2017/06/09/theory-of-modern-go.html](no magic in libs)
