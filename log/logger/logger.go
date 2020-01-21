@@ -1,5 +1,5 @@
-// Package log represents a generic logging interface
-package log
+// Package logger represents a generic logging interface
+package logger
 
 // Logger represent common interface for logging function
 type logger interface {

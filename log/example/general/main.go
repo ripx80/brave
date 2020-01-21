@@ -2,7 +2,7 @@
 package main
 
 import (
-	logger "github.com/ripx80/log"
+	"github.com/ripx80/log/logger"
 	lr "github.com/ripx80/log/logrus"
 
 	example "github.com/ripx80/log/example/somelib"

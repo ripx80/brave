@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	logger "github.com/ripx80/log"
+	"github.com/ripx80/log/logger"
 	"github.com/ripx80/log/memlog"
 )
 
