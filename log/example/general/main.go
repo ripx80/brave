@@ -19,10 +19,8 @@ func main() {
 
 	logrusLog.SetLevel(logrus.DebugLevel)
 
-	//log.SetLogger(logrusLog)
-
 	log := *logger.New(logrusLog)
-
+	logger.Set(log)
 	log.Infof("test")
 
 	/*init new logrus with fields*/
@@ -39,6 +37,7 @@ func main() {
 	/* use in libs*/
 
 	log = *logger.New(logrusLog.WithFields(logrus.Fields{"animal": "walrus"}))
+	example.SomeCall()
 	// you realy log in libs? no magic!
 	example.SomeCallArg(log)
 }

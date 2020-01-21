@@ -24,7 +24,7 @@ func (n *noOpLogger) Infof(format string, v ...interface{})  {}
 func (n *noOpLogger) Debugf(format string, v ...interface{}) {}
 
 /*Log global Log instance, noop logger is a placeholder*/
-// var Log = Logger{&noOpLogger{}} // no magic in libs
+var Log = Logger{&noOpLogger{}} // no magic in libs but you want it
 
 /*New return a new logger instance*/
 func New(log logger) *Logger {
@@ -33,12 +33,12 @@ func New(log logger) *Logger {
 	}
 }
 
-/*Set the package global logger*/
-// func Set(log logger) {
-// 	Log = Logger{
-// 		logger: log,
-// 	}
-// }
+/*Set the package global logger with magic fingers*/
+func Set(log logger) {
+	Log = Logger{
+		logger: log,
+	}
+}
 
 // no exit codes.exit is main stuff no logging stuff
 const (
