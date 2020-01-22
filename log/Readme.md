@@ -36,13 +36,26 @@ So we will not Implement this function in the interface to have a clean exit in 
 
 ## Discussion
 
+- dont log in libs, caller stuff
 - global Package logger? (noop or arg), no (no global vars, no magic)
-- three log levels?
-- With fields?
+- three log levels? no Warning
+- With fields? use json output!
+
 - defined log entries (const strings)? not here, use a error package to define errors (dependency?)
 - in memory logging for testing?
 - default format and output type/json?
 - errors.Wrap, yes but only when you use third parity libs and you dont nothing about the error.
+
+## Detecting Problems
+
+- global logrus package logger
+- info logging in libs but it is not nessacary
+- logging errors in libs
+- logging WithFields only for Error, why?
+- Only one log.Info in lib and dependency for logrus!
+- go test (archive_test.go) used one line logrus, use t.Log
+- eks.go using log not logrus
+- splunk.go printf error not using log.Errorf
 
 ## Ressources
 
