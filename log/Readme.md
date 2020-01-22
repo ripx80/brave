@@ -1,63 +1,57 @@
-# Lets talk about Logging
+# Lets talk about logging
 
-Principles
+This is a discussion MR for logging principles and interfaces. Feel free to comment the principles and implementation and the questions in the Discussion section. I collect opportunities around the globe for this, you can find them in the Further Reading section.
+
+## Principles
 
 - dont log in libs, return errors or handle them not log them in libs
 - But I have a hight level lib and I must log. Then use interfaces!
-- Use a save method in main to exit and respect the defer calls (dont use log.Panic/log.Fatal)
+- Use a save method in main to exit and respect the defer calls (dont use log.Fatal)
 - dont have dependencies at compile time in your core libs for logging (interface to the rescue)
 - One place to set logger settings
 - Use structured logs to query them
 - No warning log level: Nobody reads warnings, because by definition nothing went wrong.
-
-## Task description
-
-[Go] Improve logging principle
-We believe that improve the logging mechanism decouple dependency to a special logging lib.
-it will reduce dependencies in our core code and increase the maintainability and will improve our understanding of a good principle to log in core libs.
-We are done if we implement a general logging interface which implements different logging libs (logrus).
 
 ## Dependencies
 
 Remove dependencies in your core libs for logging. We implement a interface for the core libs. So its by the caller which logger he will use.
 The logger must be implemented and have the function of the interfaces, like logrus and zap. When you implement your cmd programm you can choose which caller you need.
 
-## No Panic function
+## No Fatal function
 
 Because we handle all our Log functionality in one Interface we can allow or disallow some functions of the underlying lib.
-For example the logrus lib has a log.Panic function wich where catched by the lib and then exit with a os.Exit and not respect our defer calls.
-So we will not Implement this function in the interface to have a clean exit in our defer main function. When you will exit with a log call and have a clean exit, use the log.Fatal function call in your lib.
+For example the logrus lib has a log.Fatal function wich where exit with a os.Exit and not respect our defer calls.
+So we will not implement this function in the interface to have a clean exit in our defer main function (SafeExit). When you will exit with a log call and have a clean exit, use the log.Panic function call in your lib.
 
 ## The disaster with logging
 
-- package initilized logger, must be build on compile time, one global logger, you dont see where he exactly come from, runtime errors if not init (Use noop logger)
-- package struct, must be init from the caller, canot use global in libs
-- logs in tests are bad, use a in memory or noop logger
+- package inits logger (instances or global vars), must be build on compile time, one global logger, you dont see where he exactly come from
+- if you use a package struct it must be init from the caller and cannot use global in libs, you must pass it by argument (clear solution with overhead)
+- how we can test logs in our tests?
+- No pre defined log msg, for example like errors "EOF" to check against
+
+## Solution
+
+- logger package which implements a logging interface
+- package instance named "log" for same use like logrus (yes, its magic, not explicit)
+- init a noop logger per default (silent mode, or when you will test without a big logrus/zap)
+- pre defined log messages (only examples at the moment)
+- memlog implements a in memory logger for testing!
+- full control over the logger you choose.
 
 ## Discussion
 
 - dont log in libs, caller stuff
-- global Package logger? (noop or arg), no (no global vars, no magic)
-- three log levels? no Warning
-- With fields? use json output!
-
+- global Package logger? no (no global vars, no magic)?
+- three log levels? no Warning, Panic, only Debug,Info,Error
+- With fields? use json output!?
 - defined log entries (const strings)? not here, use a error package to define errors (dependency?)
-- in memory logging for testing?
 - default format and output type/json?
-- errors.Wrap, yes but only when you use third parity libs and you dont nothing about the error.
+- errors.Wrap, yes but only when you use third parity libs.
 
-## Detecting Problems
+## Further Reading
 
-- global logrus package logger
-- info logging in libs but it is not nessacary
-- logging errors in libs
-- logging WithFields only for Error, why?
-- Only one log.Info in lib and dependency for logrus!
-- go test (archive_test.go) used one line logrus, use t.Log
-- eks.go using log not logrus
-- splunk.go printf error not using log.Errorf
-
-## Ressources
+[https://peter.bourgon.org/blog/2017/06/09/theory-of-modern-go.html](no magic in libs)
 
 [https://dave.cheney.net/tag/logging](Dave Cheney logging)
 
@@ -67,16 +61,16 @@ So we will not Implement this function in the interface to have a clean exit in 
 
 [https://medium.com/@jfeng45/go-microservice-with-clean-architecture-a08fa916a5db](clean log arch)
 
-[https://github.com/jfeng45/servicetmpl](mircoservices with a good log arch)
+[https://www.client9.com/structured-logging-in-golang/](structured logging in golang)
 
 [https://www.mountedthoughts.com/golang-logger-interface/](another golang-logger)
 
+[https://www.datadoghq.com/blog/go-logging/](datadog talk about go-logging)
+
 [github.com/amitrai48/logger](amitrai48 logger)
 
-[https://www.datadoghq.com/blog/go-logging/](datadog talk about go-logging)
+[https://github.com/jfeng45/servicetmpl](mircoservices with a good log arch)
 
 [https://github.com/go-log/log](go-log is a reference impl)
 
 [https://github.com/go-logr/logr](next step impl of go-log)
-
-[https://peter.bourgon.org/blog/2017/06/09/theory-of-modern-go.html](no magic in libs)

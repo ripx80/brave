@@ -24,19 +24,19 @@ func (n *noOpLogger) Infof(format string, v ...interface{})  {}
 func (n *noOpLogger) Debugf(format string, v ...interface{}) {}
 
 /*Log global Log instance, noop logger is a placeholder*/
-var Log = Logger{&noOpLogger{}} // no magic in libs but you want it
+var log = Logger{&noOpLogger{}} // no magic in libs but you want it
 
 /*New return a new logger instance*/
-func New(log logger) *Logger {
+func New(l logger) *Logger {
 	return &Logger{
-		logger: log,
+		logger: l,
 	}
 }
 
 /*Set the package global logger with magic fingers*/
-func Set(log logger) {
-	Log = Logger{
-		logger: log,
+func Set(l logger) {
+	log = Logger{
+		logger: l,
 	}
 }
 
@@ -67,4 +67,19 @@ func (l *Logger) MissingArg(argumentName string) {
 /*InvalidConfig default log entry*/
 func (l *Logger) InvalidConfig(argumentName string) {
 	l.Errorf(invalidArgMessage, argumentName)
+}
+
+/*Errorf wrapper func*/
+func Errorf(format string, v ...interface{}) {
+	log.Errorf(format, v)
+}
+
+/*Infof wrapper func*/
+func Infof(format string, v ...interface{}) {
+	log.Infof(format, v)
+}
+
+/*Debugf wrapper func*/
+func Debugf(format string, v ...interface{}) {
+	log.Debugf(format, v)
 }

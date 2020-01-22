@@ -31,7 +31,7 @@ func main() {
 	logrusLog.SetLevel(logrus.WarnLevel)
 	log.Debugf("silent me")
 
-	/* standard error msgs */
+	/* standard error msgs, for testing */
 	log.InvalidArg("p")
 	log.InvalidConfig("unkown-config")
 	/* use in libs*/
