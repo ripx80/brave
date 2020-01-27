@@ -8,7 +8,7 @@ type LoggerInt interface {
 	Warn(args ...interface{})
 	Debug(args ...interface{})
 	Panic(args ...interface{})
-	WithFields(f map[string]interface{}) LoggerInt // must have, then i can remove the format strings
+	WithFields(f Fields) LoggerInt // must have, then i can remove the format strings
 }
 
 /*Logger holds some funcs */
@@ -16,13 +16,15 @@ type Logger struct{ LoggerInt }
 
 type noOpLogger struct{}
 
+type Fields map[string]interface{}
+
 /* Only use one format no format string? */
-func (n *noOpLogger) Panic(v ...interface{})                        {}
-func (n *noOpLogger) Error(v ...interface{})                        {}
-func (n *noOpLogger) Warn(v ...interface{})                         {}
-func (n *noOpLogger) Info(v ...interface{})                         {}
-func (n *noOpLogger) Debug(v ...interface{})                        {}
-func (n *noOpLogger) WithFields(f map[string]interface{}) LoggerInt { return &noOpLogger{} }
+func (n *noOpLogger) Panic(v ...interface{})        {}
+func (n *noOpLogger) Error(v ...interface{})        {}
+func (n *noOpLogger) Warn(v ...interface{})         {}
+func (n *noOpLogger) Info(v ...interface{})         {}
+func (n *noOpLogger) Debug(v ...interface{})        {}
+func (n *noOpLogger) WithFields(f Fields) LoggerInt { return &noOpLogger{} }
 
 //func (n *noOpLogger) WithFields(v LogFields) Logger          { return Logger{&noOpLogger{}} } // look at this
 
@@ -76,27 +78,31 @@ func (l *Logger) InvalidConfig(argumentName string) {
 	l.Error(invalidArgMessage, argumentName)
 }
 
-/*Errorf wrapper func*/
+/*Error wrapper func*/
 func Error(v ...interface{}) {
-	log.Error(v[:])
+	log.Error(v...)
 }
 
 /*Info wrapper func*/
 func Info(v ...interface{}) {
-	log.Info(v[:])
+	log.Info(v...)
 }
 
-/*Info wrapper func*/
+/*Warn wrapper func*/
 func Warn(v ...interface{}) {
-	log.Warn(v[:])
+	log.Warn(v...)
 }
 
-/*Debugf wrapper func*/
-func Debug(format string, v ...interface{}) {
-	log.Debug(format, v)
+/*Debug wrapper func*/
+func Debug(v ...interface{}) {
+	log.Debug(v...)
 }
 
 /*Panic wrapper func*/
 func Panic(v ...interface{}) {
-	log.Panic(v)
+	log.Panic(v...)
+}
+
+func WithFields(f Fields) LoggerInt {
+	return log.WithFields(f)
 }

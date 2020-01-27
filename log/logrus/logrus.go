@@ -88,7 +88,7 @@ func (l *logrusLogEntry) Panic(args ...interface{}) {
 }
 
 /*WithFields wrapper, must use wrapper because of this function. */
-func (l *logrusLogger) WithFields(fields map[string]interface{}) logger.LoggerInt {
+func (l *logrusLogger) WithFields(fields logger.Fields) logger.LoggerInt {
 	return &logrusLogEntry{
 		entry: l.logger.WithFields(convertToLogrusFields(fields)),
 	}
@@ -96,13 +96,13 @@ func (l *logrusLogger) WithFields(fields map[string]interface{}) logger.LoggerIn
 }
 
 /*WithFields wrapper*/
-func (l *logrusLogEntry) WithFields(fields map[string]interface{}) logger.LoggerInt {
+func (l *logrusLogEntry) WithFields(fields logger.Fields) logger.LoggerInt {
 	return &logrusLogEntry{
 		entry: l.entry.WithFields(convertToLogrusFields(fields)),
 	}
 }
 
-func convertToLogrusFields(fields map[string]interface{}) logrus.Fields {
+func convertToLogrusFields(fields logger.Fields) logrus.Fields {
 	logrusFields := logrus.Fields{}
 	for index, val := range fields {
 		logrusFields[index] = val

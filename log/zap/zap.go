@@ -50,7 +50,7 @@ func (l *zapLogger) Panic(args ...interface{}) {
 }
 
 /*WithFields wrapper, must use wrapper because of this function. */
-func (l *zapLogger) WithFields(fields map[string]interface{}) logger.LoggerInt {
+func (l *zapLogger) WithFields(fields logger.Fields) logger.LoggerInt {
 	var f = make([]interface{}, 0)
 	for k, v := range fields {
 		f = append(f, k)
