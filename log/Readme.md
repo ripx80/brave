@@ -51,26 +51,26 @@ So we will not implement this function in the interface to have a clean exit in 
 
 ## Further Reading
 
-[https://peter.bourgon.org/blog/2017/06/09/theory-of-modern-go.html](no magic in libs)
+[no magic in libs](https://peter.bourgon.org/blog/2017/06/09/theory-of-modern-go.html)
 
-[https://dave.cheney.net/tag/logging](Dave Cheney logging)
+[Dave Cheney logging](https://dave.cheney.net/tag/logging)
 
-[https://dave.cheney.net/2017/01/26/context-is-for-cancelation](dont use context to log)
+[dont use context to log](https://dave.cheney.net/2017/01/26/context-is-for-cancelation)
 
-[https://medium.com/@jfeng45/go-microservice-with-clean-architecture-application-logging-b43dc5839bce](clean app logging)
+[clean app logging](https://medium.com/@jfeng45/go-microservice-with-clean-architecture-application-logging-b43dc5839bce)
 
-[https://medium.com/@jfeng45/go-microservice-with-clean-architecture-a08fa916a5db](clean log arch)
+[clean log arch](https://medium.com/@jfeng45/go-microservice-with-clean-architecture-a08fa916a5db)
 
-[https://www.client9.com/structured-logging-in-golang/](structured logging in golang)
+[structured logging in golang](https://www.client9.com/structured-logging-in-golang/)
 
-[https://www.mountedthoughts.com/golang-logger-interface/](another golang-logger)
+[another golang-logger](https://www.mountedthoughts.com/golang-logger-interface/)
 
-[https://www.datadoghq.com/blog/go-logging/](datadog talk about go-logging)
+[datadog talk about go-logging](https://www.datadoghq.com/blog/go-logging/)
 
-[github.com/amitrai48/logger](amitrai48 logger)
+[amitrai48 logger](https://github.com/amitrai48/logger)
 
-[https://github.com/jfeng45/servicetmpl](mircoservices with a good log arch)
+[mircoservices with a good log arch](https://github.com/jfeng45/servicetmpl)
 
-[https://github.com/go-log/log](go-log is a reference impl)
+[go-log is a reference impl](https://github.com/go-log/log)
 
-[https://github.com/go-logr/logr](next step impl of go-log)
+[next step impl of go-log](https://github.com/go-logr/logr)

@@ -1,49 +1,61 @@
 package zap
 
 import (
-	"encoding/json"
-
-	"github.com/pkg/errors"
+	"github.com/ripx80/brave/log/logger"
 	"go.uber.org/zap"
 )
 
-/*
-not working at the moment. panics
-can be used for setting up defaults
-*/
+type zapLogger struct {
+	sugaredLogger *zap.SugaredLogger
+}
 
-/*New create a new zap logger with defaults*/
-func New() (*zap.SugaredLogger, error) {
-	var cfg zap.Config
-	var zLogger *zap.Logger
-	defer zLogger.Sync()
-	rawJSON := []byte(`{
-	 "level": "info",
-     "Development": true,
-      "DisableCaller": false,
-	 "encoding": "console",
-	 "outputPaths": ["stdout", "../../../demo.log"],
-	 "errorOutputPaths": ["stderr"],
-	 "encoderConfig": {
-		"timeKey":        "ts",
-		"levelKey":       "level",
-		"messageKey":     "msg",
-         "nameKey":        "name",
-		"stacktraceKey":  "stacktrace",
-         "callerKey":      "caller",
-		"lineEnding":     "\n",
-        "timeEncoder":     "time",
-		"levelEncoder":    "lowercaseLevel",
-        "durationEncoder": "stringDuration",
-         "callerEncoder":   "shortCaller"
-	 }
-	}`)
-
-	//standard configuration
-	if err := json.Unmarshal(rawJSON, &cfg); err != nil {
-		return nil, errors.Wrap(err, "Unmarshal")
+/*New returns a new logger wrapper*/
+func New() logger.LoggerInt {
+	logger, _ := zap.NewProduction()
+	return &zapLogger{
+		sugaredLogger: logger.Sugar(),
 	}
-	//customize it from configuration file
-	sugar := zLogger.Sugar()
-	return sugar, nil
+}
+
+/*Configured return a new wrapper with the given logger*/
+func Configured(l *zap.Logger) logger.LoggerInt {
+	return &zapLogger{
+		sugaredLogger: l.Sugar(),
+	}
+}
+
+/*Debug wrapper*/
+func (l *zapLogger) Debug(args ...interface{}) {
+	l.sugaredLogger.Debug(args...)
+}
+
+/*Info wrapper*/
+func (l *zapLogger) Info(args ...interface{}) {
+	l.sugaredLogger.Info(args...)
+}
+
+/*Warn wrapper*/
+func (l *zapLogger) Warn(args ...interface{}) {
+	l.sugaredLogger.Warn(args...)
+}
+
+/*Error wrapper*/
+func (l *zapLogger) Error(args ...interface{}) {
+	l.sugaredLogger.Error(args...)
+}
+
+/*Panic wrapper*/
+func (l *zapLogger) Panic(args ...interface{}) {
+	l.sugaredLogger.Panic(args...)
+}
+
+/*WithFields wrapper, must use wrapper because of this function. */
+func (l *zapLogger) WithFields(fields map[string]interface{}) logger.LoggerInt {
+	var f = make([]interface{}, 0)
+	for k, v := range fields {
+		f = append(f, k)
+		f = append(f, v)
+	}
+	newLogger := l.sugaredLogger.With(f...)
+	return &zapLogger{newLogger}
 }

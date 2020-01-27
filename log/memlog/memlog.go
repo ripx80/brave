@@ -4,6 +4,8 @@ package memlog
 import (
 	"fmt"
 	"sync"
+
+	"github.com/ripx80/brave/log/logger"
 )
 
 // Logger implements the log.Logger interface by capturing logged
@@ -14,27 +16,50 @@ type Logger struct {
 	Entries []string
 }
 
-func (logger *Logger) Infof(format string, v ...interface{}) {
-	logger.log(fmt.Sprintf(format, v...))
+/*Info wrapper*/
+func (l *Logger) Info(v ...interface{}) {
+	l.log(fmt.Sprint(v...))
 }
 
-func (logger *Logger) Debugf(format string, v ...interface{}) {
-	logger.log(fmt.Sprintf(format, v...))
+/*Warn wrapper*/
+func (l *Logger) Warn(v ...interface{}) {
+	l.log(fmt.Sprint(v...))
 }
 
-func (logger *Logger) Errorf(format string, v ...interface{}) {
-	logger.log(fmt.Sprintf(format, v...))
+/*Debug wrapper*/
+func (l *Logger) Debug(v ...interface{}) {
+	l.log(fmt.Sprint(v...))
 }
 
-func (logger *Logger) log(entry string) {
-	logger.mutex.Lock()
-	defer logger.mutex.Unlock()
-	logger.Entries = append(logger.Entries, entry)
+/*Error wrapper*/
+func (l *Logger) Error(v ...interface{}) {
+	l.log(fmt.Sprint(v...))
 }
 
+/*Panic wrapper*/
+func (l *Logger) Panic(v ...interface{}) {
+	l.log(fmt.Sprint(v...))
+}
+
+func (l *Logger) log(entry string) {
+	l.mutex.Lock()
+	defer l.mutex.Unlock()
+	l.Entries = append(l.Entries, entry)
+}
+
+/*New return a new Logger wrapper*/
 func New() *Logger {
 	return &Logger{
 		mutex:   &sync.Mutex{},
 		Entries: []string{},
 	}
+}
+
+/*WithFields not supported im memolg*/
+func (l *Logger) WithFields(fields map[string]interface{}) logger.LoggerInt {
+	return &Logger{
+		mutex:   &sync.Mutex{},
+		Entries: []string{},
+	}
+
 }

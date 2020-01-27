@@ -2,41 +2,44 @@
 package logger
 
 // Logger represent common interface for logging function
-type logger interface {
-	Errorf(format string, args ...interface{})
-	Infof(format string, args ...interface{})
-	//Info(args ...interface{})
-	Debugf(format string, args ...interface{})
-	//Debug(args ...interface{})
-	//WFields(keyValues Fields) Logger
+type LoggerInt interface {
+	Error(args ...interface{})
+	Info(args ...interface{})
+	Warn(args ...interface{})
+	Debug(args ...interface{})
+	Panic(args ...interface{})
+	WithFields(f map[string]interface{}) LoggerInt // must have, then i can remove the format strings
 }
 
 /*Logger holds some funcs */
-type Logger struct{ logger }
+type Logger struct{ LoggerInt }
 
-/*Fields to log withFields*/
-type Fields map[string]interface{}
 type noOpLogger struct{}
 
 /* Only use one format no format string? */
-func (n *noOpLogger) Errorf(format string, v ...interface{}) {}
-func (n *noOpLogger) Infof(format string, v ...interface{})  {}
-func (n *noOpLogger) Debugf(format string, v ...interface{}) {}
+func (n *noOpLogger) Panic(v ...interface{})                        {}
+func (n *noOpLogger) Error(v ...interface{})                        {}
+func (n *noOpLogger) Warn(v ...interface{})                         {}
+func (n *noOpLogger) Info(v ...interface{})                         {}
+func (n *noOpLogger) Debug(v ...interface{})                        {}
+func (n *noOpLogger) WithFields(f map[string]interface{}) LoggerInt { return &noOpLogger{} }
+
+//func (n *noOpLogger) WithFields(v LogFields) Logger          { return Logger{&noOpLogger{}} } // look at this
 
 /*Log global Log instance, noop logger is a placeholder*/
 var log = Logger{&noOpLogger{}} // no magic in libs but you want it
 
 /*New return a new logger instance*/
-func New(l logger) *Logger {
+func New(l LoggerInt) *Logger {
 	return &Logger{
-		logger: l,
+		LoggerInt: l,
 	}
 }
 
 /*Set the package global logger with magic fingers*/
-func Set(l logger) {
+func Set(l LoggerInt) {
 	log = Logger{
-		logger: l,
+		LoggerInt: l,
 	}
 }
 
@@ -49,37 +52,51 @@ const (
 	missingConfigValue     = "Missing config value: %s"
 )
 
+func (l *Logger) Set(nl LoggerInt) {
+	l.LoggerInt = nl
+}
+
 /*InvalidArg default log entry*/
 func (l *Logger) InvalidArg(argumentName string) {
-	l.Errorf(invalidArgMessage, argumentName)
+	l.Error(invalidArgMessage, argumentName)
 }
 
 /*InvalidArgValue default log entry*/
 func (l *Logger) InvalidArgValue(argumentName string, argumentValue string) {
-	l.Errorf(invalidArgValueMessage, argumentName, argumentValue)
+	l.Error(invalidArgValueMessage, argumentName, argumentValue)
 }
 
 /*MissingArg default log entry*/
 func (l *Logger) MissingArg(argumentName string) {
-	l.Errorf(missingArgMessage, argumentName)
+	l.Error(missingArgMessage, argumentName)
 }
 
 /*InvalidConfig default log entry*/
 func (l *Logger) InvalidConfig(argumentName string) {
-	l.Errorf(invalidArgMessage, argumentName)
+	l.Error(invalidArgMessage, argumentName)
 }
 
 /*Errorf wrapper func*/
-func Errorf(format string, v ...interface{}) {
-	log.Errorf(format, v)
+func Error(v ...interface{}) {
+	log.Error(v[:])
 }
 
-/*Infof wrapper func*/
-func Infof(format string, v ...interface{}) {
-	log.Infof(format, v)
+/*Info wrapper func*/
+func Info(v ...interface{}) {
+	log.Info(v[:])
+}
+
+/*Info wrapper func*/
+func Warn(v ...interface{}) {
+	log.Warn(v[:])
 }
 
 /*Debugf wrapper func*/
-func Debugf(format string, v ...interface{}) {
-	log.Debugf(format, v)
+func Debug(format string, v ...interface{}) {
+	log.Debug(format, v)
+}
+
+/*Panic wrapper func*/
+func Panic(v ...interface{}) {
+	log.Panic(v)
 }

@@ -11,6 +11,6 @@ func main() {
 	mem := memlog.New()
 	log := *logger.New(mem)
 
-	log.Infof("test in mem")
+	log.Info("test in mem")
 	fmt.Println(mem.Entries)
 }
